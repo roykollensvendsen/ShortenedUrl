@@ -1,0 +1,31 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<div class="jumbotron">
+    <h1>URL-shortener</h1>
+    <p class="lead">People frequently need to shorten URLs when using services that limit the
+                    length of a message. URL shorteneing is also needed in other situations;
+                    such as to avoid an URL from spanning multiple lines, being split up or 
+                    word-wrapped by email software.
+    <p>This site is dedicated to shortening your URLs.<p/>
+</div>
+
+<div class="container">
+   <form class="form-horizontal" method="post" action="{{ url_for('shorten_url') }}">
+       <div class="form-group form-group-lg">
+           <label class="col-lg-1 control-label" for="url"><strong>URL:</strong></label>
+           <div class="col-lg-9">
+               <input type="text" name="url" class="form-control input-lg" id="url" style="max-width: 100%;" />
+           </div>
+           <div class="col-lg-2">
+               <input class="btn btn-primary form-control input-lg" type="submit"/>
+           </div>
+       </div>   
+    </form>
+</div>
+
+
+
+
+{% endblock %}
