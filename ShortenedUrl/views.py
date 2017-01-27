@@ -12,6 +12,7 @@ from sqlalchemy import exc
 from sqlalchemy.sql import exists
 from urllib.parse import urlparse
 
+hostname='shortened-url.cloudapp.net'
 
 bc = BaseConverter('abcdefghijklmnopqrstuvwxyz')
 
@@ -48,7 +49,7 @@ def shorten_url():
         db_session.rollback()
         if db_session.query(exists().where(UrlEntry.url == url)).scalar():
              url_entry = UrlEntry.query.filter_by(url=url).first()
-    short_url='http://%s/%s' % ("my-site.no", id2url(url_entry.id))
+    short_url='http://%s/%s' % (hostname, id2url(url_entry.id))
     return render_template('shortened_url.html', url=url, short_url=short_url)
 
 @app.route('/contact')
