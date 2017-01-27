@@ -22,35 +22,33 @@ def id2url(id):
 def url2id(url):
     return bc.decode(url)
 
-@app.route('/')
-@app.route('/home')
+@app.route('/', methods=['GET','POST'])
 def home():
-    """Renders the home page."""
+    """Renders the main page."""
+    result=''
+    if request.method == 'POST':
+        url=request.form['url']
+        url=urlparse(url)
+        if url.scheme == '' or url.netloc == '':
+            result='<div class="alert alert-danger" role="alert">Enter a full URL with scheme and netloc</div>'
+        else:
+            if url.path[-1:] == '/':
+                url = url._replace(path=url.path.rstrip('/'))
+            url=url.geturl()
+            url_entry = UrlEntry(url)
+            db_session.add(url_entry)
+            try:
+                db_session.commit()
+            except:
+                db_session.rollback()
+                if db_session.query(exists().where(UrlEntry.url == url)).scalar():
+                    url_entry = UrlEntry.query.filter_by(url=url).first()
+            result='<div class="alert alert-success" role="alert">http://%s/%s now points to %s</div>' % (hostname, id2url(url_entry.id), url)
     return render_template(
         'index.html',
         title='Home Page',
         year=datetime.now().year,
-    )
-
-@app.route('/s', methods=['POST'])
-def shorten_url():
-    url=request.form['url']
-    url=urlparse(url)
-    if url.scheme == '' or url.netloc == '':
-        return 'Enter a full URL with scheme and netloc'
-    if url.path[-1:] == '/':
-        url = url._replace(path=url.path.rstrip('/'))
-    url=url.geturl()
-    url_entry = UrlEntry(url)
-    db_session.add(url_entry)
-    try:
-        db_session.commit()
-    except:
-        db_session.rollback()
-        if db_session.query(exists().where(UrlEntry.url == url)).scalar():
-             url_entry = UrlEntry.query.filter_by(url=url).first()
-    short_url='http://%s/%s' % (hostname, id2url(url_entry.id))
-    return render_template('shortened_url.html', url=url, short_url=short_url)
+        result=result)
 
 @app.route('/contact')
 def contact():

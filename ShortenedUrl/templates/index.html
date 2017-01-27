@@ -12,7 +12,7 @@
 </div>
 
 <div class="container">
-   <form class="form-horizontal" method="post" action="{{ url_for('shorten_url') }}">
+   <form class="form-horizontal" method="post" action="{{ url_for('home') }}">
        <div class="form-group form-group-lg">
            <label class="col-lg-1 control-label" for="url"><strong>URL:</strong></label>
            <div class="col-lg-9">
@@ -25,7 +25,8 @@
     </form>
 </div>
 
-
-
+<div class="container">
+    {{ result|safe }}
+</div>
 
 {% endblock %}
